@@ -100,7 +100,7 @@
 		5D49976108CCDF92FACCFDE9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		61D20100EAE96FACA9AEEC0A /* WorkoutLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLogView.swift; sourceTree = "<group>"; };
 		6CE235FC4AFDF494EEE258E3 /* WorkoutModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutModels.swift; sourceTree = "<group>"; };
-		72D1B289F243702C980B4BA5 /* GlucoseWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = GlucoseWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		72D1B289F243702C980B4BA5 /* GlucoseWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlucoseWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		77961368AA8A231F939773E8 /* GlucoseWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlucoseWidgetBundle.swift; sourceTree = "<group>"; };
 		7AED57C32397CAAB2E9FCB1A /* OuraSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OuraSettingsView.swift; sourceTree = "<group>"; };
 		7EC003D61CBF269C7799E9D0 /* OuraWebExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OuraWebExportView.swift; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		BADB62A1623C1AEACD03BC24 /* OuraExportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OuraExportParser.swift; sourceTree = "<group>"; };
 		C2AA88728A5CD7094204661F /* GlucoseLiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlucoseLiveActivityView.swift; sourceTree = "<group>"; };
 		C61415076EC6F522CD2B93C8 /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
-		DF42C8C82C8696DBA0A04528 /* daatlas.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = daatlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF42C8C82C8696DBA0A04528 /* daatlas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = daatlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF582FE1356EE3A6F6BCD5EF /* GlucoseActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlucoseActivityAttributes.swift; sourceTree = "<group>"; };
 		E54526FA9CF307082301B812 /* OuraModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OuraModels.swift; sourceTree = "<group>"; };
 		EC0B627258912572CD19F143 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -259,7 +259,6 @@
 				5F16D68C2F148A4E0B0BEAB5 /* DesignSystem */,
 				537DDB07897B6524EEEBFB25 /* Models */,
 				EE13D7565240507667D3AD6F /* Services */,
-				A4B1151E29F26829F83B02CB /* Shared */,
 				9C2C834D9CFBFBCECCFE5524 /* ViewModels */,
 				DDE4F6E95E92AD1F397A7DB5 /* Views */,
 			);
@@ -328,11 +327,9 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					7EFD5FC4F951FE1014809FC5 = {
-						DevelopmentTeam = MGSYAXCXK3;
 						ProvisioningStyle = Automatic;
 					};
 					B17F575108360C77C16E2C2E = {
-						DevelopmentTeam = MGSYAXCXK3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -445,6 +442,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Resources/daatlas.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5LW5NS68NQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -466,6 +464,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Resources/daatlas.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5LW5NS68NQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -487,7 +486,7 @@
 				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MGSYAXCXK3;
+				DEVELOPMENT_TEAM = 5LW5NS68NQ;
 				INFOPLIST_FILE = GlucoseWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -640,7 +639,7 @@
 				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MGSYAXCXK3;
+				DEVELOPMENT_TEAM = 5LW5NS68NQ;
 				INFOPLIST_FILE = GlucoseWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
