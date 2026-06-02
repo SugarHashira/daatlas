@@ -104,6 +104,17 @@ daatlas reads from Nightscout's API, so it works with any CGM or pump that uploa
 - Tandem (via t:connect integration)
 - DIY closed-loop systems (Loop, AndroidAPS, OpenAPS)
 
+## Oura limitations
+
+Oura Ring data access works without a subscription via [Cracked-Oura](https://github.com/EIrno/Cracked-Oura), but the process is not fully automatic:
+
+1. **Login required** — you need to log in to the Oura web export and start a data report manually
+2. **Not real-time** — after triggering the report, you wait for Oura to generate it
+3. **Periodic re-export** — to get new data you have to go back, download the export again, and re-import it into daatlas
+4. **No push/webhook** — there is no background delivery; syncing new Oura data is always a manual step
+
+If you have an Oura membership, you can use the official API token instead for seamless background sync.
+
 ## Troubleshooting
 
 **Connection failed** — Check your Nightscout URL and API secret. Verify the instance is online.
