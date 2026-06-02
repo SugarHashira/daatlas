@@ -27,6 +27,17 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.daatlas.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>daatlas</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Used to photograph meals for AI carbohydrate estimation.</string>
 	<key>NSHealthShareUsageDescription</key>

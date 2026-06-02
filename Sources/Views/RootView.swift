@@ -31,7 +31,7 @@ struct RootView: View {
         .preferredColorScheme(.dark)
         .ignoresSafeArea(edges: .bottom)
         .onOpenURL { url in
-            if url.scheme == "healthsync" {
+            if url.scheme == "daatlas" {
                 switch url.host ?? url.path {
                 case "glucose", "vitals": tab = 0
                 case "trends":            tab = 1
