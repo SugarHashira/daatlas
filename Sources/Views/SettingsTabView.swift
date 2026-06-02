@@ -62,8 +62,7 @@ struct SettingsTabView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                DSAppBar(title: "Settings", status: .live,
-                         right: AnyView(DSBadge(text: "v1.4")))
+                DSAppBar(title: "Settings", status: .live)
             }
         }
         .navigationBarBackButtonHidden(true)
