@@ -1,0 +1,35 @@
+# Xcode
+.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad
+xcuserdata/
+*.xccheckout
+
+# XcodeGen
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+
+# AI / tooling — never publish
+.claude/
+.omc/
+.a5c/
+$HOME/
+AGENTS.md
+agents.md
