@@ -55,6 +55,7 @@ struct TrendsView: View {
 struct OuraTrendsView: View {
     @EnvironmentObject var viewModel: SyncViewModel
     @State private var selectedMetric: TrendMetric = .readiness
+    @State private var rangeDays: Int = 30
 
     enum TrendMetric: String, CaseIterable, Identifiable {
         case readiness = "Readiness"
@@ -107,6 +108,15 @@ struct OuraTrendsView: View {
                 }
                 .padding(.horizontal).padding(.vertical, 12)
             }
+
+            // Range picker
+            Picker("Range", selection: $rangeDays) {
+                Text("7D").tag(7)
+                Text("30D").tag(30)
+                Text("3M").tag(90)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal).padding(.bottom, 8)
 
             if viewModel.dailySummaries.isEmpty {
                 TrendsEmptyState(icon: "chart.line.uptrend.xyaxis",
@@ -216,14 +226,14 @@ struct OuraTrendsView: View {
             }
             guard let val = v else { return nil }
             return DataPoint(day: date, value: val)
-        }.sorted { $0.day < $1.day }
+        }.sorted { $0.day < $1.day }.suffix(rangeDays).map { $0 }
     }
 
     private func average(_ data: [DataPoint]) -> Double? {
         guard !data.isEmpty else { return nil }
         return data.map(\.value).reduce(0, +) / Double(data.count)
     }
-    private func strideDays(_ count: Int) -> Int { count > 14 ? 7 : count > 7 ? 3 : 1 }
+    private func strideDays(_ count: Int) -> Int { count > 60 ? 14 : count > 14 ? 7 : count > 7 ? 3 : 1 }
 }
 
 // MARK: - Glucose & Insulin view
@@ -829,7 +839,7 @@ struct GlucoseInsulinView: View {
     private var ouraMetricUnit: String {
         switch ouraMetric { case .hrv: return " ms"; default: return "" }
     }
-    private func strideDays(_ count: Int) -> Int { count > 14 ? 7 : count > 7 ? 3 : 1 }
+    private func strideDays(_ count: Int) -> Int { count > 60 ? 14 : count > 14 ? 7 : count > 7 ? 3 : 1 }
 }
 
 // MARK: - Shared components
