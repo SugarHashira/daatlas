@@ -52,7 +52,6 @@ struct SettingsTabView: View {
                 VStack(spacing: DS.gap(density)) {
                     journalSection
                     appearanceSection
-                    aboutSection
                 }
 
                 Spacer().frame(height: 100)
@@ -752,23 +751,6 @@ struct SettingsTabView: View {
         }
     }
 
-    // MARK: - About
-
-    private var aboutSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            DSSectionHeader(text: "About")
-                .padding(.horizontal, DS.pad(density))
-
-            DSCard {
-                VStack(spacing: 0) {
-                    DSKVRow(key: "Version",     value: "1.4.0 (build 142)")
-                    DSKVRow(key: "iOS minimum", value: "16.0")
-                    DSKVRow(key: "License",     value: "MIT", showDivider: false)
-                }
-            }
-            .padding(.horizontal, DS.pad(density))
-        }
-    }
 
     // MARK: - Helpers
 
