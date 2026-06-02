@@ -20,17 +20,6 @@ Tandem pump ──┘                  (unified timeline)
 
 Once synced, all your data lives in Apple Health — one place, available to every app in the ecosystem. daatlas is just the bridge. You choose what to do with the data.
 
-Apps that immediately benefit once your data is in Health:
-
-| App | What it gains |
-|---|---|
-| [Cronometer](https://apps.apple.com/app/cronometer/id1145935738) | Glucose alongside nutrition logs |
-| [MyFitnessPal](https://apps.apple.com/app/myfitnesspal/id341232718) | Calorie burn from Oura activity |
-| [Training Peaks](https://apps.apple.com/app/trainingpeaks/id490336140) | HRV + sleep for recovery scoring |
-| [Gentler Streak](https://apps.apple.com/app/gentler-streak-workout-tracker/id1576211153) | Rest-day suggestions based on HRV/sleep |
-| [Athlytic](https://apps.apple.com/app/athlytic-ai-fitness-coach/id1543571755) | Full recovery dashboard from all vitals |
-| [Clue](https://apps.apple.com/app/clue-period-tracker-calendar/id657189652) | Cycle correlations with glucose/temp |
-| [Lose It!](https://apps.apple.com/app/lose-it-calorie-counter/id297368629) | Active energy and carb tracking |
 
 ## Features
 
