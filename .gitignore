@@ -26,6 +26,9 @@ Pods/
 # OS
 Thumbs.db
 
+# Dev.to drafts
+devto-post.md
+
 # AI / tooling — never publish
 .claude/
 .omc/

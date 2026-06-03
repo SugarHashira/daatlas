@@ -233,6 +233,14 @@ GlucoseWidget/                       # WidgetKit target
 
 ---
 
+## Great apps in the diabetes space
+
+- **[Gluroo](https://gluroo.com)** — a beautifully designed diabetes management app. If you want a polished all-in-one experience, check it out.
+- **[Stash Diabetes](https://www.stashdiabetes.com)** — great app for managing and tracking diabetes supplies.
+- **[xDrip4iOS](https://xdrip4ios.readthedocs.io)** — open-source CGM reader for iOS. Supports a wide range of sensors and is the go-to for DIY CGM setups.
+
+---
+
 ## Acknowledgements
 
 - **[Cracked-Oura](https://github.com/EIrno/Cracked-Oura)** — reverse-engineered Oura API access without a subscription. daatlas's Oura integration is built on top of this work.
