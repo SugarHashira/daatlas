@@ -1,98 +1,169 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SugarHashira/daatlas/master/docs/icon.png" width="120" alt="daatlas app icon" />
+</p>
+
 # daatlas
 
 **Carry your diabetes data, everywhere.**
 
-daatlas unifies data from your Oura Ring, Nightscout instance, and Tandem pump into Apple Health — one timeline for everything.
+A privacy-first diabetes data bridge for iOS. Syncs glucose, insulin, carbs, and wearable data from Nightscout, Dexcom, and Oura Ring into Apple Health — entirely on-device, no backend, no account required.
 
-- **Oura Ring** — sleep, HRV, readiness, activity, SpO2, heart rate (no Oura subscription required, powered by [Cracked-Oura](https://github.com/EIrno/Cracked-Oura))
-- **Nightscout** — glucose readings, insulin deliveries, carb entries
-- **Tandem t:slim X2** — pump data via Nightscout
+> iOS 16+ · SwiftUI · HealthKit · Swift Concurrency
 
 ---
 
 ## What it does
 
 ```
-Oura Ring   ──┐
-Nightscout  ──┼──►  daatlas  ──►  Apple Health
-Tandem pump ──┘                  (unified timeline)
+Nightscout  ──┐
+Dexcom      ──┼──►  daatlas  ──►  Apple Health  ──►  Any app in the ecosystem
+Oura Ring   ──┤                  (unified timeline)
+Tandem pump ──┘
 ```
 
-Once synced, all your data lives in Apple Health — one place, available to every app in the ecosystem. daatlas is just the bridge. You choose what to do with the data.
+All your diabetes data lands in one place. daatlas is the bridge — you own the data.
 
+---
+
+## Integrations
+
+| Source | Method | Data |
+|--------|--------|------|
+| **Nightscout** | REST API (API_SECRET) | Glucose, insulin (bolus + basal), carbs |
+| **Dexcom** | Share API (username/password) | CGM readings |
+| **Oura Ring** | OAuth token or CSV export | Sleep, HRV, readiness, activity, SpO2, HR, temperature, respiratory rate |
+| **Tandem t:slim X2** | Via Nightscout (tconnectsync) | Pump events |
+| **Apple HealthKit** | Framework | Primary data sink |
+
+---
 
 ## Features
 
-- **Glucose sync** — Blood glucose readings in mg/dL or mmol/L
-- **Insulin sync** — Bolus and basal deliveries mapped to HealthKit types
-- **Carb sync** — Dietary carbohydrate entries
-- **Oura sync** — Sleep, HRV, readiness, activity, SpO2, HR, temperature (no subscription needed)
-- **Deduplication** — Never writes the same record twice
-- **Background sync** — Runs automatically at intervals you choose (5 min – 2 hours)
-- **Sync logs** — Full history of what was synced and when
-- **Selective sync** — Enable only the data types you want
+- **Multi-source glucose sync** — Nightscout SGVs or Dexcom Share in mg/dL or mmol/L
+- **Insulin tracking** — Bolus and basal deliveries mapped to HealthKit insulin types
+- **Carb logging** — Dietary carb entries from Nightscout
+- **Oura sync** — Sleep, HRV, readiness, activity, SpO2, heart rate, temperature (no subscription required)
+- **Deduplication** — Two-tier system: Nightscout `_id` in HealthKit metadata + timestamp fallback
+- **Background sync** — Configurable intervals (5 min – 2 hours) via `BGAppRefreshTask` and `BGProcessingTask`
+- **Sync logs** — Complete audit trail of what synced and when
+- **Selective sync** — Enable or disable individual data types
+- **Dashboard** — Correlates glucose, insulin, sleep, and activity in one view
+- **Trends** — Historical data visualisation with Apple Charts
+- **Live Activities** — Glucose on Dynamic Island and Lock Screen
+- **Widgets** — Home screen glucose widget via WidgetKit
+- **Claude export** — Export a date-range data dump for AI analysis
 
-## Requirements
+---
 
-- iOS 16+
-- A running [Nightscout](https://nightscout.github.io/) instance with REST API enabled
-- Nightscout `API_SECRET` configured
+## Tech stack
+
+| Layer | Technology |
+|-------|-----------|
+| UI | SwiftUI |
+| Health data | HealthKit |
+| Concurrency | Swift async/await · `actor` types throughout |
+| Background | BGAppRefreshTask · BGProcessingTask |
+| Charts | Swift Charts (Apple) |
+| Widgets | WidgetKit |
+| Live Activities | ActivityKit |
+| Auth | SHA1 via CryptoKit (Nightscout) |
+| Networking | URLSession (no Alamofire) |
+| Build | XcodeGen (`project.yml`) |
+| Dependencies | ZIPFoundation 0.9.19+ |
+| Min target | iOS 16.0 |
+
+---
+
+## Architecture
+
+```
+SwiftUI Views (@EnvironmentObject SyncViewModel)
+        │
+        ▼
+SyncViewModel (@MainActor, 50+ @Published properties)
+        │
+        ├── NightscoutService (actor)   ─► glucose, insulin, carbs
+        ├── DexcomService     (actor)   ─► CGM readings
+        ├── OuraService       (actor)   ─► sleep, HRV, vitals
+        └── HealthKitService  (actor)   ─► Apple Health read/write
+
+UserSettings (actor) ─► UserDefaults wrapper (25+ keys)
+```
+
+All services are `actor` types — compile-time thread safety, no manual locking, no data races. `HealthKitService` is the single write path to Apple Health.
+
+**Deduplication** is two-tier: primary key is the Nightscout `_id` stored in HealthKit sample metadata; fallback is minute-rounded timestamp comparison for legacy entries.
+
+---
+
+## Build
+
+Requires Xcode 15+ and a device or simulator running iOS 16+.
+
+```bash
+git clone https://github.com/SugarHashira/daatlas.git
+cd daatlas
+
+# (Optional) regenerate Xcode project from project.yml
+brew install xcodegen
+xcodegen generate
+
+open daatlas.xcodeproj
+# Cmd+B to build · Cmd+R to run
+```
+
+---
 
 ## Setup
 
-### 1. Nightscout
+### Nightscout
 
-Ensure your Nightscout instance has:
+Ensure your Nightscout instance has REST API enabled:
 
 ```
 API_SECRET=your_secret_here
 ENABLE=api
 ```
 
-### 2. Install
+In daatlas → Settings → enter your **Nightscout URL** and **API Secret** → tap **Test Connection** → **Request HealthKit Authorization** → enable the data types you want synced.
 
-```bash
-git clone https://github.com/SugarHashira/daatlas.git
-open daatlas.xcodeproj
-# Build and run on your device
-```
+### Nightscout hosting options
 
-### 3. Configure
+- **[Fly.io](https://fly.io)** — Docker-based, free tier available → [setup guide](https://nightscout.github.io/nightscout/fly/)
+- **[Railway](https://railway.app)** — Simple deploy from GitHub
+- **[Heroku](https://heroku.com)** — Classic option (paid plans only now)
+- **Self-hosted** — Raspberry Pi or any server with Docker
 
-1. Open daatlas
-2. Tap the gear icon → **Settings**
-3. Enter your **Nightscout URL** (e.g. `https://your-nightscout.fly.dev`)
-4. Enter your **API Secret**
-5. Tap **Test Connection**
-6. Tap **Request HealthKit Authorization**
-7. Enable the data types you want synced
+### Dexcom
 
-### 4. Sync
+In daatlas → Settings → Dexcom → enter your Dexcom Share **username** and **password**.
 
-Tap **Sync Now** for a manual sync, or enable **Auto-sync** for background operation.
+### Oura Ring
+
+**With membership:** In daatlas → Settings → Oura → enter your **API token** for seamless background sync.
+
+**Without membership:** Use the [Cracked-Oura](https://github.com/EIrno/Cracked-Oura) export workflow — trigger a data report from the Oura web portal, download the export, and import via daatlas → Settings → Oura → Import Export.
+
+---
 
 ## Data mapping
 
 | Source | Data | Apple Health |
-|---|---|---|
+|--------|------|-------------|
 | Nightscout | SGV entries | Blood Glucose |
 | Nightscout | Bolus treatments | Insulin Delivery (Bolus) |
 | Nightscout | Temp basal treatments | Insulin Delivery (Basal) |
 | Nightscout | Carb treatments | Dietary Carbohydrates |
-| Oura Ring | Sleep stages | Sleep Analysis |
-| Oura Ring | HRV | Heart Rate Variability |
-| Oura Ring | Heart rate | Heart Rate |
-| Oura Ring | SpO2 | Blood Oxygen |
-| Oura Ring | Temperature deviation | Body Temperature |
-| Oura Ring | Respiratory rate | Respiratory Rate |
-| Oura Ring | Activity | Active Energy / Steps |
+| Dexcom | CGM readings | Blood Glucose |
+| Oura | Sleep stages | Sleep Analysis |
+| Oura | HRV | Heart Rate Variability |
+| Oura | Heart rate | Heart Rate |
+| Oura | SpO2 | Blood Oxygen |
+| Oura | Temperature deviation | Body Temperature |
+| Oura | Respiratory rate | Respiratory Rate |
+| Oura | Activity | Active Energy / Steps |
 
-## Nightscout hosting options
-
-- **[Fly.io](https://fly.io)** — Docker-based, fast, free tier available → [setup guide](https://nightscout.github.io/nightscout/fly/)
-- **[Railway](https://railway.app)** — Simple deploy from GitHub
-- **[Heroku](https://heroku.com)** — Classic option (paid plans only now)
-- **Self-hosted** — Raspberry Pi or any server with Docker
+---
 
 ## CGM / pump support
 
@@ -104,53 +175,77 @@ daatlas reads from Nightscout's API, so it works with any CGM or pump that uploa
 - Tandem (via t:connect integration)
 - DIY closed-loop systems (Loop, AndroidAPS, OpenAPS)
 
-## Oura limitations
+---
 
-Oura Ring data access works without a subscription via [Cracked-Oura](https://github.com/EIrno/Cracked-Oura), but the process is not fully automatic:
+## Project structure
 
-1. **Login required** — you need to log in to the Oura web export and start a data report manually
-2. **Not real-time** — after triggering the report, you wait for Oura to generate it
-3. **Periodic re-export** — to get new data you have to go back, download the export again, and re-import it into daatlas
-4. **No push/webhook** — there is no background delivery; syncing new Oura data is always a manual step
+```
+daatlas/Sources/
+├── App/
+│   ├── HealthSyncApp.swift          # @main entry, dependency injection
+│   └── AppDelegate.swift            # Background task registration & scheduling
+├── Models/
+│   ├── GlucoseEntry.swift           # SGV with mg/dL ↔ mmol/L conversion
+│   ├── NightscoutTreatment.swift    # Insulin (bolus/basal), carbs
+│   ├── OuraModels.swift             # Sleep, HRV, activity, vitals
+│   ├── DexcomModels.swift           # Dexcom reading structures
+│   ├── UserSettings.swift           # Actor-wrapped UserDefaults (25+ keys)
+│   └── SyncLog.swift                # Sync operation audit trail
+├── Services/
+│   ├── SyncService.swift            # Actor: orchestrates all syncs
+│   ├── NightscoutService.swift      # Actor: Nightscout REST client
+│   ├── OuraService.swift            # Actor: Oura Ring API client
+│   ├── DexcomService.swift          # Actor: Dexcom Share API client
+│   └── HealthKitService.swift       # Actor: HealthKit read/write
+├── ViewModels/
+│   └── SyncViewModel.swift          # @MainActor: all published state
+└── Views/
+    ├── RootView.swift               # Tab navigation
+    ├── VitalsTabView.swift          # Current glucose, HR, SpO2
+    ├── TrendsTabView.swift          # Historical charts
+    ├── DashboardView.swift          # Correlation view
+    ├── SettingsTabView.swift        # Settings hub
+    └── ClaudeExportView.swift       # AI data export
+GlucoseWidget/                       # WidgetKit target
+```
 
-If you have an Oura membership, you can use the official API token instead for seamless background sync.
+---
 
-## Troubleshooting
+## Known limitations
 
-**Connection failed** — Check your Nightscout URL and API secret. Verify the instance is online.
+- **Oura without membership requires manual export** — no real-time background sync; re-export needed for new data
+- **No offline sync** — all syncs require network connectivity
+- **No token auto-refresh for Oura** — manual re-auth when tokens expire
+- **Food carb estimation is manual** — no AI-assisted entry yet
 
-**HealthKit authorization denied** — Go to iOS Settings → Privacy & Security → Health → daatlas → enable write access for each data type.
-
-**Data not appearing** — Confirm sync completed in Sync Logs. Check that write permissions were granted for that specific data type.
-
-## Tech stack
-
-- **SwiftUI** — Declarative UI
-- **HealthKit** — Apple Health integration
-- **Swift Concurrency** — async/await throughout
-- **iOS 16+** — Minimum deployment target
-
-## Credits
-
-- **[Cracked-Oura](https://github.com/EIrno/Cracked-Oura)** — reverse-engineered Oura API access without a subscription. daatlas's Oura integration is built on top of this work.
-- **[tconnectsync-heroku](https://github.com/jwoglom/tconnectsync-heroku)** — syncs Tandem t:slim X2 pump data from t:connect to Nightscout. The bridge that brings Tandem data into the pipeline.
-- **[Nightscout](https://github.com/nightscout/cgm-remote-monitor)** — open-source diabetes data platform that makes all of this possible.
+---
 
 ## Roadmap
 
-- **Better notifications** — Glucose alerts, sync failure warnings, daily health summary push notifications
-- **Live Activity improvements** — Real-time glucose on Dynamic Island and Lock Screen with trend arrows and time-in-range
+- **Live Activity improvements** — real-time glucose on Dynamic Island with trend arrows and time-in-range
 - **Food logging** — AI-assisted carb estimation from photos, barcode scanning, meal history
-- **Apple Watch app** — Quick sync status, glucose glance, complication support
-- **Shortcuts & automation** — Siri Shortcuts integration, automations triggered by glucose levels
-- **VO2 Max sync** — Write Oura VO2 Max estimates to HealthKit
-- **Widget** — Home screen widget showing current glucose + last night's sleep score + HRV
-- **CSV / PDF export** — Export synced data for clinic visits
-- **iCloud sync** — Settings and sync history backed up across devices
+- **Apple Watch app** — quick sync status, glucose glance, complication support
+- **Shortcuts & automation** — Siri Shortcuts, glucose-triggered automations
+- **VO2 Max sync** — Oura VO2 Max to HealthKit
+- **Widget** — home screen glucose + sleep score + HRV
+- **CSV / PDF export** — data dump for clinic visits
+- **iCloud sync** — settings and sync history across devices
+
+---
+
+## Acknowledgements
+
+- **[Cracked-Oura](https://github.com/EIrno/Cracked-Oura)** — reverse-engineered Oura API access without a subscription. daatlas's Oura integration is built on top of this work.
+- **[tconnectsync-heroku](https://github.com/jwoglom/tconnectsync-heroku)** — syncs Tandem t:slim X2 pump data from t:connect to Nightscout.
+- **[Nightscout](https://github.com/nightscout/cgm-remote-monitor)** — open-source diabetes data platform that makes all of this possible.
+
+---
 
 ## License
 
 GNU General Public License v3.0 — see [LICENSE](LICENSE) for details.
+
+---
 
 ## Disclaimer
 
